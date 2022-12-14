@@ -12,19 +12,25 @@ import java.util.Scanner;
 public class TestRun {
 
 	public static void main(String[] args) {
-
-		while(true) {
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		Scanner sc = new Scanner(System.in);
+		while(true) {
+		
+		
 	
 		System.out.println("1. SELECT");
 		System.out.println("2. INSERT");
 		System.out.println("3. DELETE");
 		System.out.println("4. 종료");
 		System.out.print("메뉴 입력 : ");
-		
-		
-		
 		
 		
 		
@@ -53,7 +59,20 @@ public class TestRun {
 			}
 		}
 	}
-	 
+	
+	
+	// combine 구문
+	public static void InsOrDel() {
+		boolean trueFalse = true;
+		if (trueFalse == true) {
+			
+		} else {
+			
+		}
+	}
+	
+	
+	
 	// select 구문 
 	public static void select() {
 		Connection conn = null;
@@ -114,11 +133,16 @@ public class TestRun {
 		sc.nextLine();
 		
 		
+	
+		String sql = "INSERT INTO PRODUCT VALUES(SEQ_PNO.NEXTVAL, '" + pname + "'," + price + ", SYSDATE)";
+
+		
 		int result = 0;
 		Connection conn = null;
 		Statement stmt = null;
-		String sql = "INSERT INTO PRODUCT VALUES(SEQ_PNO.NEXTVAL, '" + pname + "'," + price + ", SYSDATE)";
-
+		
+		
+		
 		// jdbc driver 등록
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -167,6 +191,10 @@ public class TestRun {
 		
 		String sql = "DELETE FROM PRODUCT WHERE PNAME = '" + pname + "'";
 		
+		
+		
+		
+		
 		int result = 0;
 		Connection conn = null;
 		Statement stmt = null;
@@ -206,6 +234,16 @@ public class TestRun {
 		} else {
 			System.out.println("delete 실패");
 		}
+		
+		
 	}
+	
+
+	// try~with~resources 구문
+	public static void dml() {
+		
+		
+	}
+	
 
 }
