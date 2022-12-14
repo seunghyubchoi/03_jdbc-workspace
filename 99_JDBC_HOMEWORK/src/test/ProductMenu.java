@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 public class ProductMenu {
 
-	 String user = "JDBC";
-	 String password = "JDBC";
+	String user = "JDBC";
+	String password = "JDBC";
 	String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:xe";
 
 	static Connection conn = null;
