@@ -35,6 +35,8 @@ VALUES(SEQ_USERNO.NEXTVAL, 'user01', 'pass01', 'È«±æµ¿', null, 23, 'user01@iei.o
 
 COMMIT;
 
+DROP TABLE TEST;
+
 CREATE TABLE TEST(
     TNO NUMBER,
     TNAME VARCHAR2(20),
@@ -46,7 +48,7 @@ DROP TABLE PRODUCT;
 
 -- ½ÃÄö½º SEQ_PNO Á¦°Å
 DROP SEQUENCE SEQ_PNO;
-
+-----------------------------------------------------------------------
 CREATE TABLE PRODUCT(
     PNO NUMBER PRIMARY KEY,
     PNAME VARCHAR2(30) NOT NULL,
@@ -55,6 +57,8 @@ CREATE TABLE PRODUCT(
 );
 
 CREATE SEQUENCE SEQ_PNO
+START WITH 100
+INCREMENT BY 1
 NOCACHE;
 
 COMMIT;
