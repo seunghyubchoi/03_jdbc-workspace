@@ -11,10 +11,6 @@ import java.util.Scanner;
 
 public class ProductMenu {
 
-	String user = "JDBC";
-	String password = "JDBC";
-	String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:xe";
-
 	static Connection conn = null;
 	static Statement stmt = null;
 	static ResultSet rset = null;
@@ -99,7 +95,7 @@ public class ProductMenu {
 	// UPDATE, DELETE 예외
 	public static void trywith(String sql) {
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Class.forName("oracle.jdbc.driver.OracleDri-ver");
 
 			// Connection 객체 생성
 			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
