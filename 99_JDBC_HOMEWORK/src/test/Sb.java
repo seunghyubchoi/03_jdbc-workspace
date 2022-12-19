@@ -31,7 +31,7 @@ public class Sb {
 			sb.append(a+b);
 			System.out.println(sb.toString());
 			
-			ArrayList<String> colors 
+			//ArrayList<String> colors 
 			
 		}
 	}

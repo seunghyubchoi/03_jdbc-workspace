@@ -102,6 +102,7 @@ public class MemberDao {
 
 	/**
 	 * 전체 조회
+	 * 
 	 * @return
 	 */
 	public ArrayList<Member> selectList() {
@@ -177,6 +178,7 @@ public class MemberDao {
 
 	/**
 	 * 이름으로 조회 메소드
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -227,4 +229,269 @@ public class MemberDao {
 		return list;
 
 	}
+
+	/**
+	 * selectByUserId(String userId) 사용자의 아이디로 회원검색 요청 처리해주는 메소드
+	 * 
+	 * @param userId = 사용자가 입력한 검색하고자 하는 회원 아이디 값
+	 * @return 검색된 결과가 있으면 Member 객체 | 결과가 없으면 null
+	 */
+	public Member selectByUserId(String userId) {
+		Member m = null; // 조회 결과가 있을수도 있고 없을수도 있으니까
+
+		// 사용할 변수 및 객체 값 셋팅
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rset = null;
+
+		// 쿼리
+		String sql = "SELECT * FROM MEMBER WHERE USERID = '" + userId + "'";
+
+		// 드라이버 연결
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
+			stmt = conn.createStatement();
+			rset = stmt.executeQuery(sql);
+
+			if (rset.next()) { // rset.next()가 true가 됐다는 의미는 한 행이라도 존재한다는 뜻
+				// 조회됐다면 해당 조회된 컬럼 값들을 쏙쏙 뽑아서 한 Member 객체의 각 필드에 담기
+				// m에는 userId의 정보를 싹 다 가지고 있는 상태
+				m = new Member(rset.getInt("userno"), rset.getString("userid"), rset.getString("userpwd"),
+						rset.getString("username"), rset.getString("gender"), rset.getInt("age"),
+						rset.getString("phone"), rset.getString("email"), rset.getString("address"),
+						rset.getString("hobby"), rset.getDate("enrolldate"));
+
+			}
+
+			// 위의 조건문 다 끝난 시점에
+			// 만약에 조회된 데이터가 없었을 경우 = m은 null
+			// 만약에 조회된 데이터가 있었을 경우 = m은 생성 후 뭐라도 담겨있음
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rset.close();
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return m;
+	}
+
+	/**
+	 * 사용자의 이름으로 키워드 검색 요청시 처리해주는 메소드
+	 * @param keyword
+	 * @return
+	 */
+	public ArrayList<Member> selectByUserName(String keyword) {
+		// select문 수행(여러행이 나올 수 있다고 생각해야됨) => ResultSet
+		// 따라서 ArrayList<Member>로 짜야함
+		ArrayList<Member> list = new ArrayList<Member>();
+
+		// 변수 셋팅
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rset = null;
+
+		String sql = "SELECT * FROM MEMBER WHERE USERNAME LIKE '%" + keyword + "%'";
+
+		// 드라이버 연결
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
+			stmt = conn.createStatement();
+
+			// 쿼리 실행 담기
+			rset = stmt.executeQuery(sql);
+
+			while (rset.next()) {
+				
+				/*
+				 
+				이전까지의 방식 
+				 
+				Member m = new Member();
+				m.setUserNo(rset.getInt("userno"));
+				m.setUserId(rset.getString("userid"));
+				m.setUserPwd(rset.getString("userpwd"));
+				m.setUserName(rset.getString("username"));
+				m.setGender(rset.getString("gender"));
+				m.setAge(rset.getInt("age"));
+				m.setEmail(rset.getString("email"));
+				m.setPhone(rset.getString("phone"));
+				m.setAddress(rset.getString("address"));
+				m.setHobby(rset.getString("hobby"));
+				m.setEnrollDate(rset.getDate("enrolldate"));
+				
+				list.add(m);
+				
+				*/
+				
+				list.add(new Member(
+						rset.getInt("userno"),
+						rset.getString("userid"),
+						rset.getString("userpwd"),
+						rset.getString("username"),
+						rset.getString("gender"),
+						rset.getInt("age"),
+						rset.getString("email"),
+						rset.getString("phone"),
+						rset.getString("address"),
+						rset.getString("hobby"),
+						rset.getDate("enrolldate")							
+						));
+				
+				
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rset.close();
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		return list;
+
+	}
+	
+	/**
+	 * 사용자가 입력한 아이디의 정보 변경 요청 처리해주는 메소드
+	 * @param m
+	 * @return result : 처리된 행수
+	 */
+	public int updateMember(Member m) {
+		// update문  => 처리된 행의 수가 리턴됨(int) => 트랜잭션 처리
+		
+		// 변수 셋팅
+		int result = 0;
+		Connection conn = null;
+		Statement stmt = null;
+
+		// sql문
+		String sql = "UPDATE MEMBER "
+				   + "SET USERPWD = '" + m.getUserPwd()  + "'"
+				   +     ", EMAIL = '" + m.getEmail()    + "'"
+				   +     ", PHONE = '" + m.getPhone()    + "'"
+				   +   ", ADDRESS = '" + m.getAddress()  + "'"
+				   +   ", AGE = " 	   + m.getAge() 
+				   +"WHERE USERID = '" + m.getUserId()   + "'";
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			stmt = conn.createStatement();
+			result = stmt.executeUpdate(sql);
+			
+			if(result > 0) {
+				conn.commit();
+			} else { 
+				conn.rollback();
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
+	public int deleteMember(String userId) {
+		// delete문 = > 처리된 행수(int) 반환, 반드시 트랜잭션 처리
+		
+		int result = 0;
+		Connection conn = null;
+		Statement stmt = null;
+		
+		String sql = "DELETE FROM MEMBER WHERE USERID ='" + userId + "'";
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			stmt = conn.createStatement();
+			result = stmt.executeUpdate(sql);
+			
+			if(result > 0) {
+				conn.commit();
+			} else {
+				conn.rollback();
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

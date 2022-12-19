@@ -62,18 +62,87 @@ public class MemberController {
 			new MemberMenu().displayMemberList(list);
 		}
 	}
-	
+
 	/**
 	 * 이름으로 조회 요청 처리 메소드
+	 * 
 	 * @param name
 	 */
 	public void inputName(String name) {
 		ArrayList<Member> list = new MemberDao().selectList(name);
-		if (list.isEmpty()) { 
+		if (list.isEmpty()) {
 			new MemberMenu().displayNodata("전체 조회 결과가 없습니다.");
 		} else {
 			new MemberMenu().displayInfoByName(list);
 		}
 	}
+
+	/**
+	 * 사용자의 아이디로 회원검색 요청 처리해주는 메소드
+	 * 
+	 * @param userId
+	 */
+	public void selectByUserId(String userId) {
+		// select문 (한 행) => ResultSet객체에 넣어줘야 함
+		// 굳이 ArrayList 필요 없음, Member 객체만 있으면 될 듯
+		Member m = new MemberDao().selectByUserId(userId);
+		if (m == null) { // 검색 결과가 없을 경우 (조회된 데이터가 없는 경우)
+			new MemberMenu().displayNodata(userId + "에 해당하는 검색결과가 없습니다.");
+		} else {
+			new MemberMenu().displayMember(m);
+		}
+	}
+
+	/**
+	 * 사용자의 이름으로 키워드 검색 요청시 처리해주는 메소드
+	 * 
+	 * @param keyword
+	 */
+	public void selectByUserName(String keyword) {
+		ArrayList<Member> list = new MemberDao().selectByUserName(keyword);
+		if (list.isEmpty()) { // 텅빈 리스트일 경우 => 검색결과 없음
+			new MemberMenu().displayNodata(list + "에 해당하는 검색결과가 없습니다.");
+		} else { // 검색 결과 있는 경우
+			new MemberMenu().displayMemberList(list);
+		}
+	}
+
+	/**
+	 * @param userId  : 변경하고자 하는 회원 아이디
+	 * @param userPwd : 변경할 비밀번호
+	 * @param email	  : 변경할 이메일
+	 * @param phone   : 변경할 전화번호
+	 * @param address : 변경할 주소
+	 * @param age     : 변경할 나이
+	 */
+	public void updateMember(String userId, String userPwd, String email, String phone, String address, String age) {
+		Member m = new Member();
+		m.setUserId(userId);
+		m.setUserPwd(userPwd);
+		m.setEmail(email);
+		m.setPhone(phone);
+		m.setAddress(address);
+		m.setAge(Integer.parseInt(age));
+		
+		
+		// 0 아니면 1의 값이 들어옴
+		int result = new MemberDao().updateMember(m);
+		if(result> 0) {
+			new MemberMenu().displaySuccess("성공적으로 회원 정보가 변경 되었습니다.");
+		} else {
+			new MemberMenu().displayFail("회원정보 변경에 실패 했습니다.");
+		}
+	}
+	
+	public void deleteMember(String userId) {
+		int result = new MemberDao().deleteMember(userId);
+		if(result > 0) {
+			new MemberMenu().displaySuccess("성공적으로 회원 정보가 삭제 되었습니다.");
+		} else {
+			new MemberMenu().displayFail("회원정보 삭제에 실패 했습니다.");
+
+		}
+	}
+	
 
 }
