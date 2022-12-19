@@ -15,12 +15,11 @@ public class PokemonMenu {
 			System.out.println("1. 포켓몬 추가");
 			System.out.println("2. 포켓몬 전체 조회");
 			System.out.println("3. 타입별 검색");
-			System.out.println("4. 분류별 검색");
-			System.out.println("5. 이름 키워드로 검색");
-			System.out.println("6. 정보 변경");
-			System.out.println("7. 포켓몬 지우기");
+			System.out.println("4. 이름 키워드로 검색");
+			System.out.println("5. 정보 변경");
+			System.out.println("6. 포켓몬 지우기");
 			System.out.println("0. 프로그램 종료");
-
+			System.out.print(">> 메뉴 입력 : ");
 			int menu = sc.nextInt();
 			sc.nextLine();
 			switch (menu) {
@@ -50,26 +49,23 @@ public class PokemonMenu {
 				break;
 
 			case 4:
-
+				pc.inputPokemonName(inputPokemonName());
 				break;
 
 			case 5:
-
+				updatePokemon();
 				break;
 
 			case 6:
-
+				pc.deletePokemon(deletePokemon());
 				break;
 
-			case 7:
+			case 0:
+				System.out.println("\n프로그램을 종료합니다.\n");
+				return;
 
-				break;
 
-			case 8:
-
-				break;
-
-			default:
+			default: System.out.println("\n메뉴 상의 숫자를 입력해주세요.\n");
 				break;
 			}
 		}
@@ -81,7 +77,7 @@ public class PokemonMenu {
 	 * @param message
 	 */
 	public void displaySuccess(String message) {
-		System.out.println("\n 서비스 요청 성공 : " + message);
+		System.out.println("\n 서비스 요청 성공 : " + message + "\n");
 	}
 
 	/**
@@ -90,9 +86,14 @@ public class PokemonMenu {
 	 * @param message
 	 */
 	public void displayFail(String message) {
-		System.out.println("\n 서비스 요청 실패 : " + message);
+		System.out.println("\n 서비스 요청 실패 : " + message + "\n");
 	}
 
+	/**
+	 * 등록된 모든 포켓몬을 보여주는 리스트
+	 * 
+	 * @param list
+	 */
 	public void displaySearchAll(ArrayList<Pokemon> list) {
 		for (Pokemon p : list) {
 			System.out.println(p);
@@ -100,6 +101,72 @@ public class PokemonMenu {
 		System.out.println();
 	}
 
+	/**
+	 * 데이터에 등록된 전체 타입을 보여주는 메소드
+	 * @param list
+	 */
+	public void displayListByType(ArrayList<String> list) {
+		for (int i = 0; i < list.size(); i++) {
+			System.out.print(i + 1 + "." + list.get(i) + "\n");
+
+		}
+		System.out.print("타입 입력 : ");
+		String type = sc.nextLine();
+		pc.displayByType(type);
+
+	}
+	
+	/**
+	 * 사용자가 선택한 타입만 보여주는 메소드
+	 * @param list
+	 */
+	public void displayListBySelectedType(ArrayList<Pokemon> list) {
+		for (Pokemon p : list) {
+			System.out.println(p);
+		}
+		System.out.println();
+	}
+
+	
+	/**
+	 * 포켓몬의 이름을 입력받는 메소드
+	 * @return
+	 */
+	public String inputPokemonName() {
+		System.out.print("\n포켓몬 이름(키워드) 입력 : ");
+		return sc.nextLine();
+	}
+	
+	
+	
+	
+	
+	/**
+	 * 포켓몬 정보 업데이트 메소드
+	 */
+	public void updatePokemon() {
+		System.out.println("\n === 포켓몬 정보 업데이트 ===");
+		System.out.print("이름 입력 : ");
+		String pkName = sc.nextLine();
+		
+		System.out.print("키 입력 : ");
+		String pkHeight = sc.nextLine();
+		
+		System.out.print("몸무게 입력 : ");
+		String pkWeight = sc.nextLine();
+		
+		System.out.print("설명 입력 : ");
+		String pkDetail = sc.nextLine();
+		
+		pc.updatePokemon(pkName, pkHeight, pkWeight, pkDetail);
+	}
+	
+	public String deletePokemon() {
+		System.out.print("이름 입력 : ");
+		return sc.nextLine();
+	}
+	
+	
 	/*
 	 * public void signUp() { System.out.println("1. 계정생성");
 	 * System.out.println("0. 프로그램 종료"); int menu = sc.nextInt(); sc.nextLine();

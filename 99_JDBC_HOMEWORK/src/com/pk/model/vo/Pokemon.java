@@ -14,6 +14,17 @@ public class Pokemon {
 	// 생성자부
 	public Pokemon() {}
 
+	
+
+	
+	public Pokemon(String pkType) {
+		super();
+		this.pkType = pkType;
+	}
+
+
+
+
 	public Pokemon(int pkNo, String pkName, String pkType, String pkClass, double pkHeight, double pkWeight,
 			String pkDetail) {
 		super();
@@ -75,7 +86,7 @@ public class Pokemon {
 		return pkHeight;
 	}
 
-	public void setPkHeight(int pkHeight) {
+	public void setPkHeight(Double pkHeight) {
 		this.pkHeight = pkHeight;
 	}
 
@@ -83,7 +94,7 @@ public class Pokemon {
 		return pkWeight;
 	}
 
-	public void setPkWeight(int pkWeight) {
+	public void setPkWeight(Double pkWeight) {
 		this.pkWeight = pkWeight;
 	}
 

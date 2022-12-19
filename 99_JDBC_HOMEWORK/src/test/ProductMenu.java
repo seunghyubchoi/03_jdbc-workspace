@@ -95,7 +95,7 @@ public class ProductMenu {
 	// UPDATE, DELETE 예외
 	public static void trywith(String sql) {
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDri-ver");
+			Class.forName("oracle.jdbc.driver.OracleDriver");
 
 			// Connection 객체 생성
 			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
