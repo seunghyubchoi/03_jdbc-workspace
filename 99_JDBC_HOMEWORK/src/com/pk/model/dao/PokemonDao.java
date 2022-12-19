@@ -106,6 +106,38 @@ public class PokemonDao {
 	}
 	
 	public void searchByType() {
+		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
+		Connection conn  = null;
+		Statement stmt = null;
+		ResultSet rset = null;
+		
+		String sql = "SELECT DISTINCT PKTYPE FROM POKEMON";
+		
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			stmt = conn.createStatement();
+			rset = stmt.executeQuery(sql);
+			
+			while(rset.next()) {
+				Pokemon p = new Pokemon();
+				p.setPkType(rset.getString("PKTYPE"));
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rset.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 		
 	}
 }
