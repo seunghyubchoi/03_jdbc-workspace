@@ -18,6 +18,27 @@ public class MemberController {
 	// View단을 전역변수로 주면 StackOverFlow 오류가 발생할 수 있다......
 	// private MemberMenu mm = new MemberMenu();
 
+	
+	public void loginMenu(String userId, String userPwd) {
+		int result = new MemberDao().loginMenu(userId, userPwd);
+		if(result>0) {
+			new MemberMenu().mainMenu();
+		} else { 
+			new MemberMenu().displayFail("로그인 실패");
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 사용자의 회원 추가 요청을 처리해주는 메소드
 	 * 

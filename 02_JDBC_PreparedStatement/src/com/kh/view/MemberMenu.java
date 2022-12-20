@@ -19,6 +19,28 @@ public class MemberMenu { // View
 	// (여기서 Controller 호출!!!! = mc)
 	private MemberController mc = new MemberController();
 
+	public void loginMenu() {
+		while(true) {
+			String userId = inputMemberId();
+			
+			
+			String userPwd = inputMemberPwd();
+			
+			mc.loginMenu(userId, userPwd);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 사용자가 보게될 첫 화면(메인 화면)
 	 */
@@ -32,7 +54,6 @@ public class MemberMenu { // View
 			System.out.println("│   4. 회원 이름으로 키워드 검색│");
 			System.out.println("│   5. 회원 정보 변경           │");
 			System.out.println("│   6. 회원탈퇴                 │");
-			System.out.println("│   7. 아이디 비밀번호로 검색   │");
 			System.out.println("│   0. 프로그램 종료            │");
 			System.out.println("│   9. 이름으로 정보조회        │");
 			System.out.println("└───────────────────────────────┘");
@@ -60,9 +81,6 @@ public class MemberMenu { // View
 				break;
 			case 6:
 				mc.deleteMember(inputMemberId());
-				break;
-			case 7:
-				inputIdPwd();
 				break;
 
 			case 9:
@@ -124,12 +142,21 @@ public class MemberMenu { // View
 	 * 사용자에게 회원 아이디를 입력 받은 후 입력된 값을 반환시켜주는 메소드
 	 */
 	public String inputMemberId() {
-		System.out.print("\n회원 아이디 입력 : ");
+		System.out.print("회원 아이디 입력 : ");
 		//String userId = sc.nextLine();
 		return sc.nextLine(); 
 		// 입력한 아이디 값을 바로 return
 		// return은 호출한 곳으로 감
 		
+	}
+	
+	/**
+	 * 사용자에게 회원 비밀번호를 입력 받은 후 입력된 값을 반환시켜주는 메소드
+	 * @return
+	 */
+	public String inputMemberPwd() {
+		System.out.print("회원 비밀번호 입력 : ");
+		return sc.nextLine();
 	}
 	
 	/**
@@ -246,9 +273,7 @@ public class MemberMenu { // View
 		mc.inputName(name);
 	}
 
-	public void inputIdPwd() {
-		
-	}
+
 	
 	/**
 	 * 이름 입력 후 조회 요청시 사용자가 보게 될 응답화면

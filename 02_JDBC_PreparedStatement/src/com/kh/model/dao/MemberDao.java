@@ -43,6 +43,58 @@ public class MemberDao {
 	 * pstmt.setXXX(1, "대체할 값"); 3) 해당 완성된 sql문 실행 결과 받기 : 결과 = pstmt.executeXXX();
 	 */
 
+	
+	public int loginMenu(String userId, String userPwd) {
+		int result = 0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		String sql = "SELECT * FROM MEMBER WHERE USERID = ? AND USERPWD = ?";
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","JDBC","JDBC");
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userPwd);
+			
+			result = pstmt.executeUpdate();
+			
+			if (result > 0) {
+				conn.commit();
+			} else { 
+				conn.rollback();
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 회원을 추가하는 메소드
 	 * 
