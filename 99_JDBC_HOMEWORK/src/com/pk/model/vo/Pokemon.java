@@ -112,7 +112,7 @@ public class Pokemon {
 	@Override
 	public String toString() {
 		return pkNo + ", " + pkName + ", " + pkType + ", " + pkClass
-				+ ", " + pkHeight + ", " + pkWeight + ", " + pkDetail;
+				+ ", " + pkHeight + "m, " + pkWeight + "kg, " + pkDetail;
 	}
 	
 	

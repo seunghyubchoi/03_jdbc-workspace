@@ -50,9 +50,19 @@ public class PokemonController {
 		ArrayList<String> list = new PokemonDao().searchByType();
 
 		if (list.isEmpty()) {
-			new PokemonMenu().displayFail("타입을 불러오는데 실패했습니다.");
+			new PokemonMenu().displayFail("포켓몬 타입을 불러오는데 실패했습니다.");
 		} else {
 			new PokemonMenu().displayListByType(list);
+
+		}
+	}
+	
+	public void searchByClass() {
+		ArrayList<String> list = new PokemonDao().searchByClass();
+		if (list.isEmpty()) {
+			new PokemonMenu().displayFail("포켓몬 분류를 불러오는데 실패했습니다.");
+		} else {
+			new PokemonMenu().displayListByClass(list);
 
 		}
 	}
@@ -69,6 +79,19 @@ public class PokemonController {
 			new PokemonMenu().displayFail("select 요청이 실패했습니다.");
 		} else {
 			new PokemonMenu().displayListBySelectedType(list);
+		}
+	}
+	
+	/**
+	 * @param pkClass
+	 */
+	public void displayByClass(String pkClass) {
+		ArrayList<Pokemon> list = new PokemonDao().displayByType(pkClass);
+		
+		if (list.isEmpty()) {
+			new PokemonMenu().displayFail("select 요청이 실패했습니다.");
+		} else {
+			new PokemonMenu().displayListBySelectedClass(list);
 		}
 	}
 
@@ -109,6 +132,10 @@ public class PokemonController {
 		}
 	}
 	
+	/**
+	 * 포켓몬 정보 삭제 메소드
+	 * @param name
+	 */
 	public void deletePokemon(String name) {
 		int result = new PokemonDao().deletePokemon(name);
 		if (result > 0) {
