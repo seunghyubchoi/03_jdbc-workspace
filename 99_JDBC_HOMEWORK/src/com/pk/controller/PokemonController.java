@@ -7,6 +7,39 @@ import com.pk.model.vo.Pokemon;
 import com.pk.view.PokemonMenu;
 
 public class PokemonController {
+	
+	public void loginMenu(String userId, String userPwd) {
+		int result = new PokemonDao().loginMenu(userId, userPwd);
+		if (result > 0) {
+			new PokemonMenu().trainerMenu(userId);
+		} else {
+			new PokemonMenu().displayFail("로그인에 실패했습니다.");
+		}
+	}
+	
+	
+	
+	
+	public void displayTrainerName(String userId) {
+		String userName = new PokemonDao().displayTrainerName(userId);
+		if(userName == null) {
+			System.out.println("없어요");
+		} else {
+			System.out.println("환영합니다 " + userName + "님!");
+		}
+	}
+	
+	public void displayMyPokemon(String userId) {
+		ArrayList<Pokemon> list = new PokemonDao().displayMyPokemon(userId);
+		if(list.isEmpty()) {
+			new PokemonMenu().displayFail("데이터가 없습니다");
+		} else {
+			new PokemonMenu().displaySearchAll(list);
+		}
+	}
+	
+	
+	
 	/**
 	 * 사용자가 직접 입력하여 포켓몬을 추가하는 메소드
 	 * 

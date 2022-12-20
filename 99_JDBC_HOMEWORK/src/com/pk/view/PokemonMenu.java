@@ -10,6 +10,47 @@ public class PokemonMenu {
 	Scanner sc = new Scanner(System.in);
 	PokemonController pc = new PokemonController();
 
+	public void loginMenu() {
+		System.out.println("기어와요 포켓몬의 숲");
+		System.out.println("1. 로그인하기");
+		System.out.println("2. 회원가입하기");
+		System.out.print(">> 메뉴 입력 : ");
+		int menu = sc.nextInt();
+		sc.nextLine();
+		switch (menu) {
+		case 1:
+			String userId = InsertUserId();
+			String userPwd = InsertUserPwd();
+			pc.loginMenu(userId, userPwd);
+			break;
+		case 2:
+
+			break;
+
+		default:System.out.println("메뉴 상의 숫자를 입력해주세요");
+			break;
+		}
+
+	}
+	
+	
+	public void trainerMenu(String userId) {
+		pc.displayTrainerName(userId);
+		System.out.println("1. 나의 포켓몬 조회");
+		int menu = sc.nextInt();
+		sc.nextLine();
+		switch (menu) {
+		case 1:
+			pc.displayMyPokemon(userId);
+			break;
+
+		default:
+			break;
+		}
+		
+		
+	}
+
 	/**
 	 * 포켓몬 메인 메뉴 메소드
 	 */
@@ -78,7 +119,19 @@ public class PokemonMenu {
 			}
 		}
 	}
-
+//------------------------------------------------------------------------------------
+	
+	public String InsertUserId() {
+		System.out.println("아이디를 입력해주세요.");
+		return sc.nextLine();
+	}
+	
+	public String InsertUserPwd() {
+		System.out.println("비밀번호를 입력해주세요.");
+		return sc.nextLine();
+	}
+	
+	
 	/**
 	 * 요청 성공시 사용자에게 보여지는 문구
 	 * 
