@@ -21,7 +21,11 @@ public class PokemonMenu {
 		case 1:
 			String userId = InsertUserId();
 			String userPwd = InsertUserPwd();
-			pc.loginMenu(userId, userPwd);
+			if(userId.equals("admin") && userPwd.equals("admin")) {
+				pc.adminLoginMenu(userId, userPwd);
+			} else {
+				pc.loginMenu(userId, userPwd);				
+			}
 			break;
 		case 2:
 
@@ -32,7 +36,6 @@ public class PokemonMenu {
 		}
 
 	}
-	
 	
 	public void trainerMenu(String userId) {
 		pc.displayTrainerName(userId);
@@ -47,8 +50,7 @@ public class PokemonMenu {
 		default:
 			break;
 		}
-		
-		
+
 	}
 
 	/**
@@ -82,8 +84,12 @@ public class PokemonMenu {
 				String pkWeight = sc.nextLine();
 				System.out.print("설명 입력 : ");
 				String pkDetail = sc.nextLine();
+				System.out.print("트레이너 번호 입력 : ");
+				String trNo = sc.nextLine();
+				
+				
 
-				pc.insertPokemon(pkName, pkType, pkClass, pkHeight, pkWeight, pkDetail);
+				pc.insertPokemon(pkName, pkType, pkClass, pkHeight, pkWeight, pkDetail, trNo);
 				break;
 			case 2:
 				pc.searchAll();

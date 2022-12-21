@@ -10,6 +10,8 @@ public class Pokemon {
 	private double pkHeight;
 	private double pkWeight;
 	private String pkDetail;
+	private int trNo;
+	//private Trainer trainer;
 	
 	// 생성자부
 	public Pokemon() {}
@@ -26,7 +28,7 @@ public class Pokemon {
 
 
 	public Pokemon(int pkNo, String pkName, String pkType, String pkClass, double pkHeight, double pkWeight,
-			String pkDetail) {
+			String pkDetail, int trNo) {
 		super();
 		this.pkNo = pkNo;
 		this.pkName = pkName;
@@ -35,10 +37,14 @@ public class Pokemon {
 		this.pkHeight = pkHeight;
 		this.pkWeight = pkWeight;
 		this.pkDetail = pkDetail;
+		this.trNo = trNo;
 	}
-	
+
+
+
+
 	public Pokemon(String pkName, String pkType, String pkClass, double pkHeight, double pkWeight,
-			String pkDetail) {
+			String pkDetail, int trNo) {
 		super();
 		this.pkName = pkName;
 		this.pkType = pkType;
@@ -46,6 +52,7 @@ public class Pokemon {
 		this.pkHeight = pkHeight;
 		this.pkWeight = pkWeight;
 		this.pkDetail = pkDetail;
+		this.trNo = trNo;
 	}
 	
 	// getter setter
@@ -106,15 +113,28 @@ public class Pokemon {
 		this.pkDetail = pkDetail;
 	}
 
-	
+
+	public int getTrNo() {
+		return trNo;
+	}
+
+	public void setTrNo(int trNo) {
+		this.trNo = trNo;
+	}
+
+
+
 	// toString
-	
+
 	@Override
 	public String toString() {
 		return pkNo + ", " + pkName + ", " + pkType + ", " + pkClass
-				+ ", " + pkHeight + "m, " + pkWeight + "kg, " + pkDetail;
+				+ ", " + pkHeight + ", " + pkWeight + ", " + pkDetail + ", " + trNo;
 	}
 	
+
+	
+
 	
 	
 	

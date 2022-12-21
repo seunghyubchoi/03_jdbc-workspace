@@ -8,21 +8,27 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import static com.pk.common.JDBCTemplate.*;
 import com.pk.model.vo.Pokemon;
 import com.pk.model.vo.Trainer;
 
 public class PokemonDao {
 
-	public int loginMenu(String userId, String userPwd) {
+	/**
+	 * 트레이너 메뉴로 로그인하는 메소드
+	 * 
+	 * @param userId
+	 * @param userPwd
+	 * @return
+	 */
+	public int loginMenu(Connection conn, String userId, String userPwd) {
 		int result = 0;
-		Connection conn = null;
+
 		PreparedStatement pstmt = null;
 
 		String sql = "SELECT * FROM TRAINER WHERE TRID = ? AND TRPWD = ?";
 
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
 			pstmt.setString(2, userPwd);
@@ -34,33 +40,48 @@ public class PokemonDao {
 			} else {
 				conn.rollback();
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(pstmt);
+		}
+		return result;
+	}
 
+	public int adminLoginMenu(Connection conn, String userId, String userPwd) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+
+		String sql = "SELECT * FROM TRAINER WHERE TRID = ? AND TRPWD = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "admin");
+			pstmt.setString(2, "admin");
+
+			result = pstmt.executeUpdate();
+
+			if (result > 0) {
+				conn.commit();
+			} else {
+				conn.rollback();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
 		}
 		return result;
 
 	}
 
-	public String displayTrainerName(String userId) {
+	public String displayTrainerName(Connection conn, String userId) {
 		String name = null;
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		String sql = "SELECT TRNAME FROM TRAINER WHERE TRID = ?";
 
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
 			rset = pstmt.executeQuery();
@@ -69,67 +90,49 @@ public class PokemonDao {
 				name = rset.getString("TRNAME");
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(rset);
+			close(pstmt);
 		}
 
 		return name;
 	}
 
-	public ArrayList<Pokemon> displayMyPokemon(String userId) {
+	public ArrayList<Pokemon> displayMyPokemon(Connection conn, String userId) {
 		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
-		String sql = "SELECT * FROM POKEMON JOIN TRAINER USING(TRNO) WHERE TRID = ?";
+		String sql = "SELECT * FROM POKEMON p, TRAINER t WHERE p.TRNO = t.TRNO AND t.TRID = ?";
 
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, userId);
 			rset = pstmt.executeQuery();
 
 			while (rset.next()) {
-				Pokemon p = new Pokemon();
+
 				Trainer t = new Trainer();
 				t.setTrNo(rset.getInt("TRNO"));
-				p.setPkNo(rset.getInt("PKNO"));
-				p.setPkName(rset.getString("PKNAME"));
-				p.setPkType(rset.getString("PKTYPE"));
-				p.setPkClass(rset.getString("PKCLASS"));
-				p.setPkHeight(rset.getDouble("PKHEIGHT"));
-				p.setPkWeight(rset.getDouble("PKWEIGHT"));
-				p.setPkDetail(rset.getString("PKDETAIL"));
 				t.setTrId(rset.getString("TRID"));
 				t.setTrPwd(rset.getString("TRPWD"));
 				t.setTrName(rset.getString("TRNAME"));
 
+				Pokemon p = new Pokemon(rset.getInt("PKNO"), rset.getString("PKNAME"), rset.getString("PKTYPE"),
+						rset.getString("PKCLASS"), rset.getDouble("PKHEIGHT"), rset.getDouble("PKWEIGHT"),
+						rset.getString("PKDETAIL"), rset.getInt("TRNO"));
+
 				list.add(p);
 
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(rset);
+			close(pstmt);
+
 		}
 
 		return list;
@@ -141,22 +144,13 @@ public class PokemonDao {
 	 * @param p
 	 * @return result
 	 */
-	public int insertPokemon(Pokemon p) {
+	public int insertPokemon(Connection conn, Pokemon p) {
 		int result = 0;
-		Connection conn = null;
 		PreparedStatement pstmt = null;
-		/*
-		 * String sql = "INSERT INTO POKEMON VALUES (SEQ_PKNO.NEXTVAL, '" +
-		 * p.getPkName() + "'" + ", '" + p.getPkType() + "'" + ", '" + p.getPkClass() +
-		 * "'" + ", " + p.getPkHeight() + ", " + p.getPkWeight() + ", '" +
-		 * p.getPkDetail() + "')";
-		 */
 
-		String sql = "INSERT INTO POKEMON VALUES (SEQ_PKNO.NEXTVAL, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO POKEMON VALUES (SEQ_PKNO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, p.getPkName());
 			pstmt.setString(2, p.getPkType());
@@ -164,6 +158,7 @@ public class PokemonDao {
 			pstmt.setDouble(4, p.getPkHeight());
 			pstmt.setDouble(5, p.getPkWeight());
 			pstmt.setString(6, p.getPkDetail());
+			pstmt.setInt(7, p.getTrNo());
 			result = pstmt.executeUpdate();
 
 			if (result > 0) {
@@ -172,18 +167,10 @@ public class PokemonDao {
 				conn.rollback();
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
+			close(pstmt);
 		}
 		return result;
 	}
@@ -193,17 +180,14 @@ public class PokemonDao {
 	 * 
 	 * @return list
 	 */
-	public ArrayList<Pokemon> searchAll() {
+	public ArrayList<Pokemon> searchAll(Connection conn) {
 		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
 		String sql = "SELECT * FROM POKEMON";
 
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 
 			rset = pstmt.executeQuery();
@@ -217,21 +201,15 @@ public class PokemonDao {
 				p.setPkHeight(rset.getDouble("PKHEIGHT"));
 				p.setPkWeight(rset.getDouble("PKWEIGHT"));
 				p.setPkDetail(rset.getString("PKDETAIL"));
+				p.setTrNo(rset.getInt("TRNO"));
 
 				list.add(p);
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(rset);
+			close(pstmt);
 		}
 		return list;
 	}
@@ -239,17 +217,14 @@ public class PokemonDao {
 	/**
 	 * 데이터에 등록된 전체 타입을 보여주는 메소드
 	 */
-	public ArrayList<String> searchByType() {
+	public ArrayList<String> searchByType(Connection conn) {
 		ArrayList<String> list = new ArrayList<String>();
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
 		String sql = "SELECT DISTINCT PKTYPE FROM POKEMON";
 
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 			rset = pstmt.executeQuery();
 
@@ -259,35 +234,31 @@ public class PokemonDao {
 				list.add(pkType);
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(rset);
+			close(pstmt);
 		}
 
 		return list;
 
 	}
 
-	public ArrayList<String> searchByClass() {
+	/**
+	 * 분류별로 분류하는 메소드
+	 * 
+	 * @param conn
+	 * @return
+	 */
+	public ArrayList<String> searchByClass(Connection conn) {
 		ArrayList<String> list = new ArrayList<String>();
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
 		String sql = "SELECT DISTINCT PKCLASS FROM POKEMON";
 
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 			rset = pstmt.executeQuery();
 
@@ -296,72 +267,28 @@ public class PokemonDao {
 
 				list.add(pkClass);
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(pstmt);
 		}
-		return list;
-	}
-
-	public ArrayList<Pokemon> displayByClass(String pkClass) {
-		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-
-		String sql = "SELECT * FROM POKEMON WHERE PKClass = ?";
-
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, pkClass);
-			rset = pstmt.executeQuery();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-
 		return list;
 	}
 
 	/**
-	 * 사용자가 선택한 타입만 보여주는 메소드
+	 * 사용자로부터 타입을 입력받아 입력된 타입만 보여주는 메소드
 	 * 
 	 * @param type
 	 * @return
 	 */
-	public ArrayList<Pokemon> displayByType(String type) {
+	public ArrayList<Pokemon> displayByType(Connection conn, String type) {
 		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
-		String sql = "SELECT * FROM POKEMON WHERE PKCLASS = ?";
+		String sql = "SELECT * FROM POKEMON WHERE PKTYPE = ?";
 
 		try {
-
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, type);
 			rset = pstmt.executeQuery();
@@ -379,19 +306,51 @@ public class PokemonDao {
 				list.add(p);
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(rset);
+			close(pstmt);
+		}
 
+		return list;
+	}
+
+	/**
+	 * 사용자로부터 클래스를 입력받아 입력된 클래스만 보여주는 메소드
+	 * 
+	 * @param pkClass
+	 * @return
+	 */
+	public ArrayList<Pokemon> displayByClass(Connection conn, String pkClass) {
+		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+
+		String sql = "SELECT * FROM POKEMON WHERE PKCLASS = ?";
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, pkClass);
+			rset = pstmt.executeQuery();
+
+			while (rset.next()) {
+				Pokemon p = new Pokemon();
+				p.setPkNo(rset.getInt("PKNO"));
+				p.setPkName(rset.getString("PKNAME"));
+				p.setPkType(rset.getString("PKTYPE"));
+				p.setPkClass(rset.getString("PKCLASS"));
+				p.setPkHeight(rset.getDouble("PKHEIGHT"));
+				p.setPkWeight(rset.getDouble("PKWEIGHT"));
+				p.setPkDetail(rset.getString("PKDETAIL"));
+
+				list.add(p);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
 		}
 
 		return list;
@@ -403,17 +362,14 @@ public class PokemonDao {
 	 * @param name
 	 * @return
 	 */
-	public ArrayList<Pokemon> inputPokemonName(String name) {
+	public ArrayList<Pokemon> inputPokemonName(Connection conn, String name) {
 		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
 		String sql = "SELECT * FROM POKEMON WHERE PKNAME LIKE ?";
 		try {
 
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, "%" + name + "%");
 
@@ -431,19 +387,11 @@ public class PokemonDao {
 
 				list.add(p);
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				rset.close();
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
+			close(rset);
+			close(pstmt);
 		}
 
 		return list;
@@ -455,9 +403,8 @@ public class PokemonDao {
 	 * @param p
 	 * @return
 	 */
-	public int updatePokemon(Pokemon p) {
+	public int updatePokemon(Connection conn, Pokemon p) {
 		int result = 0;
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		/*
 		 * String sql = "UPDATE POKEMON " + "SET PKHEIGHT = " + p.getPkHeight() +
@@ -467,8 +414,6 @@ public class PokemonDao {
 		String sql = "UPDATE POKEMON SET PKHEIGHT = ?, PKWEIGHT = ?, PKDETAIL = ? WHERE PKNAME = ?";
 
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setDouble(1, p.getPkHeight());
@@ -484,30 +429,26 @@ public class PokemonDao {
 				conn.rollback();
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
+			close(pstmt);
 		}
 		return result;
 	}
 
-	public int deletePokemon(String name) {
+	/**
+	 * 포켓몬 정보 삭제 메소드
+	 * @param conn
+	 * @param name
+	 * @return
+	 */
+	public int deletePokemon(Connection conn, String name) {
 		int result = 0;
-		Connection conn = null;
 		PreparedStatement pstmt = null;
 		String sql = "DELETE FROM POKEMON WHERE PKNAME = ?";
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "JDBC", "JDBC");
+			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, name);
 			result = pstmt.executeUpdate();
@@ -518,17 +459,10 @@ public class PokemonDao {
 				conn.rollback();
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				pstmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(pstmt);
 		}
 		return result;
 
