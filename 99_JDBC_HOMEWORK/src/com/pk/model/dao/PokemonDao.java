@@ -1,5 +1,7 @@
 package com.pk.model.dao;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import static com.pk.common.JDBCTemplate.*;
 import com.pk.model.vo.Pokemon;
@@ -14,6 +17,16 @@ import com.pk.model.vo.Trainer;
 
 public class PokemonDao {
 
+	
+	private Properties prop = new Properties();
+	
+	public PokemonDao() {
+		try {
+			prop.loadFromXML(new FileInputStream("resources/query.xml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * 트레이너 메뉴로 로그인하는 메소드
 	 * 
@@ -26,7 +39,7 @@ public class PokemonDao {
 
 		PreparedStatement pstmt = null;
 
-		String sql = "SELECT * FROM TRAINER WHERE TRID = ? AND TRPWD = ?";
+		String sql = prop.getProperty("loginMenu");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -52,7 +65,7 @@ public class PokemonDao {
 		int result = 0;
 		PreparedStatement pstmt = null;
 
-		String sql = "SELECT * FROM TRAINER WHERE TRID = ? AND TRPWD = ?";
+		String sql = prop.getProperty("adminLoginMenu");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -79,7 +92,7 @@ public class PokemonDao {
 		String name = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
-		String sql = "SELECT TRNAME FROM TRAINER WHERE TRID = ?";
+		String sql = prop.getProperty("displayTrainerName");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -104,7 +117,7 @@ public class PokemonDao {
 		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
-		String sql = "SELECT * FROM POKEMON p, TRAINER t WHERE p.TRNO = t.TRNO AND t.TRID = ?";
+		String sql = prop.getProperty("displayMyPokemon");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -148,7 +161,7 @@ public class PokemonDao {
 		int result = 0;
 		PreparedStatement pstmt = null;
 
-		String sql = "INSERT INTO POKEMON VALUES (SEQ_PKNO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = prop.getProperty("insertPokemon");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -185,7 +198,7 @@ public class PokemonDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
-		String sql = "SELECT * FROM POKEMON";
+		String sql = prop.getProperty("searchAll");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -222,7 +235,7 @@ public class PokemonDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
-		String sql = "SELECT DISTINCT PKTYPE FROM POKEMON";
+		String sql = prop.getProperty("searchByType");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -256,7 +269,7 @@ public class PokemonDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
-		String sql = "SELECT DISTINCT PKCLASS FROM POKEMON";
+		String sql = prop.getProperty("searchByClass");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -286,7 +299,7 @@ public class PokemonDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
-		String sql = "SELECT * FROM POKEMON WHERE PKTYPE = ?";
+		String sql = prop.getProperty("displayByType");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -327,7 +340,7 @@ public class PokemonDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
-		String sql = "SELECT * FROM POKEMON WHERE PKCLASS = ?";
+		String sql = prop.getProperty("displayByClass");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -367,7 +380,7 @@ public class PokemonDao {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
-		String sql = "SELECT * FROM POKEMON WHERE PKNAME LIKE ?";
+		String sql = prop.getProperty("inputPokemonName");
 		try {
 
 			pstmt = conn.prepareStatement(sql);
@@ -411,7 +424,7 @@ public class PokemonDao {
 		 * ", PKWEIGHT = " + p.getPkWeight() + ", PKDETAIL = '" + p.getPkDetail() + "'"
 		 * + "WHERE PKNAME = '" + p.getPkName() + "'";
 		 */
-		String sql = "UPDATE POKEMON SET PKHEIGHT = ?, PKWEIGHT = ?, PKDETAIL = ? WHERE PKNAME = ?";
+		String sql = prop.getProperty("updatePokemon");
 
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -446,7 +459,7 @@ public class PokemonDao {
 	public int deletePokemon(Connection conn, String name) {
 		int result = 0;
 		PreparedStatement pstmt = null;
-		String sql = "DELETE FROM POKEMON WHERE PKNAME = ?";
+		String sql = prop.getProperty("deletePokemon");
 		try {
 			
 			pstmt = conn.prepareStatement(sql);

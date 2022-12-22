@@ -1,5 +1,7 @@
 package test;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -7,13 +9,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class TestRun {
 
 	public static void main(String[] args) {
 		
-		
+		Properties prop = new Properties();
+		try {
+			prop.store(new FileOutputStream("resources/driver.properties"), "properties Test");
+			prop.storeToXML(new FileOutputStream("resources/query.xml"), "properties Test");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		
 		
