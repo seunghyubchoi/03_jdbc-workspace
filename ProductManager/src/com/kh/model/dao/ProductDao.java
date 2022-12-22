@@ -16,7 +16,7 @@ import com.kh.model.vo.Product;
 public class ProductDao {
 
 	private Properties prop = new Properties();
-	
+
 	public ProductDao() {
 		try {
 			prop.loadFromXML(new FileInputStream("resources/query.xml"));
@@ -74,11 +74,6 @@ public class ProductDao {
 
 			result = pstmt.executeUpdate();
 
-			if (result > 0) {
-				commit(conn);
-			} else {
-				rollback(conn);
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -92,11 +87,152 @@ public class ProductDao {
 
 	}
 
-	public void deleteProduct() {
+	public int deleteProduct(Connection conn, String productId) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("deleteProduct");
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, productId);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	public ArrayList<Product> inputProductKeyword(Connection conn, String keyword) {
+		ArrayList<Product> list = new ArrayList<Product>();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+
+		String sql = prop.getProperty("inputProductKeyword");
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%" + keyword + "%");
+			rset = pstmt.executeQuery();
+
+			while (rset.next()) {
+				Product p = new Product(rset.getString("PRODUCT_ID"), rset.getString("P_NAME"), rset.getInt("PRICE"),
+						rset.getString("DESCRIPTION"), rset.getInt("STOCK"));
+				list.add(p);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+
+		return list;
+	}
+
+	public int updateProductName(Connection conn, String productId, String productName) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateProductName");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, productName);
+			pstmt.setString(2, productId);
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+
+		return result;
+	}
+
+	public int updateProductPrice(Connection conn, String productId, String productPrice) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateProductPrice");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, productPrice);
+			pstmt.setString(2, productId);
+
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	public int updateProductDescription(Connection conn, String productId, String productDescription) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateProductDescription");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, productDescription);
+			pstmt.setString(2, productId);
+
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+
+		return result;
+	}
+
+	public int updateProductStock(Connection conn, String productId, String productStock) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateProductStock");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, productStock);
+			pstmt.setString(2, productId);
+
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	public int updateProductAll(Connection conn, Product p) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+
+		String sql = prop.getProperty("updateProductAll");
+
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, p.getProductName());
+			pstmt.setInt(2, p.getProductPrice());
+			pstmt.setString(3, p.getProductDescription());
+			pstmt.setInt(4, p.getProductPrice());
+			pstmt.setString(5, p.getProductId());
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+
+		return result;
 
 	}
 
-	public void inputProductKeyword() {
-
-	}
 }

@@ -12,5 +12,33 @@
 		INSERT INTO PRODUCT VALUES(?, ?, ?, ?, ?)
 	</entry>
 	
+	<entry key="deleteProduct">
+		DELETE FROM PRODUCT WHERE PRODUCT_ID = ?
+	</entry>
+	
+	
+	<entry key="inputProductKeyword">
+		SELECT PRODUCT_ID, P_NAME, PRICE, DESCRIPTION, STOCK FROM PRODUCT WHERE P_NAME LIKE ?
+	</entry>
+	
+	<entry key="updateProductAll">
+	UPDATE PRODUCT SET P_NAME = ?, PRICE = ?, DESCRIPTION = ?, STOCK = ? WHERE PRODUCT_ID = ?
+	</entry>
+	
+	<entry key="updateProductName">
+	UPDATE PRODUCT SET P_NAME = ? WHERE PRODUCT_ID = ?
+	</entry>
+	
+	<entry key="updateProductPrice">
+	UPDATE PRODUCT SET PRICE = ? WHERE PRODUCT_ID = ?
+	</entry>
+	
+	<entry key="updateProductDescription">
+	UPDATE PRODUCT SET DESCRIPTION = ? WHERE PRODUCT_ID = ?
+	</entry>
+	
+	<entry key="updateProductStock">
+	UPDATE PRODUCT SET STOCK = ? WHERE PRODUCT_ID = ?
+	</entry>
 	
 </properties>
