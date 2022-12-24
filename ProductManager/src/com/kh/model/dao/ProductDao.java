@@ -24,6 +24,7 @@ public class ProductDao {
 			e.printStackTrace();
 		}
 	}
+	
 
 	public ArrayList<Product> selectProduct(Connection conn) {
 		ArrayList<Product> list = new ArrayList<Product>();
