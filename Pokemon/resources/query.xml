@@ -67,6 +67,7 @@
 			  , PKDETAIL
 			  , TRNO
 		FROM POKEMON
+		ORDER BY PKNO
 	</entry>
 	
 	<entry key="searchByType">

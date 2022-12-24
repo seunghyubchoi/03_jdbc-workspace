@@ -105,9 +105,8 @@ public class Pokemon {
 
 	@Override
 	public String toString() {
-		return "Pokemon [pkNo=" + pkNo + ", pkName=" + pkName + ", pkType=" + pkType + ", pkClass=" + pkClass
-				+ ", pkHeight=" + pkHeight + ", pkWeight=" + pkWeight + ", pkDetail=" + pkDetail + ", trNo=" + trNo
-				+ "]";
+		return pkName + ", " + pkType + ", " + pkClass
+				+ ", " + pkHeight + "(m), " + pkWeight + "(kg), " + pkDetail + " " + trNo;
 	}
 
 }
