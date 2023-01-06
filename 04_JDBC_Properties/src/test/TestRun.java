@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;import java.io.InputStream;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class TestRun {
 
@@ -49,5 +50,25 @@ public class TestRun {
 		System.out.println(prop.getProperty("username"));
 		System.out.println(prop.getProperty("password"));
 		// 존재하지 않는 키값 제시하면 null 반환
+		
+		/*
+		
+		Scanner sc = new Scanner(System.in);
+		int asuki = sc.nextInt();
+		sc.nextLine();
+		int n = sc.nextInt();
+		sc.nextLine();
+		
+		int asuki2 = asuki + n;
+		char result = (char)asuki2;
+		
+		String answer = String.valueOf(result);
+		
+		System.out.println(result);
+		*/
+		
+		
+		
+		
 	}
 }

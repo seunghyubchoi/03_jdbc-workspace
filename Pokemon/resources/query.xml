@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>properties Test</comment>
+
+	<entry key="loginMenu">
+		SELECT 
+				TRNO
+			  , TRID
+			  , TRPWD
+			  , TRNAME
+		FROM TRAINER 
+		WHERE TRID = ? 
+		AND TRPWD = ?
+	</entry>
+	
+	<entry key="adminLoginMenu">
+		SELECT 
+				TRNO
+			  , TRID
+			  , TRPWD
+			  , TRNAME
+		FROM TRAINER 
+		WHERE TRID = ? 
+		AND TRPWD = ?
+	</entry>
+	
+	<entry key="displayTrainerName">
+		SELECT 
+				TRNAME 
+		FROM TRAINER
+		WHERE TRID = ?
+	</entry>
+	
+	<entry key="displayMyPokemon">
+		SELECT 
+		*
+		 FROM   POKEMON p
+		 	  , TRAINER t 
+		 WHERE p.TRNO = t.TRNO 
+		 AND t.TRID = ?
+	</entry>
+	
+	<entry key="insertPokemon">
+		INSERT 
+		INTO POKEMON 
+		VALUES (
+				SEQ_PKNO.NEXTVAL
+				, ?
+				, ?
+				, ?
+				, ?
+				, ?
+				, ?
+				, ?
+				)
+	</entry>
+	
+	<entry key="searchAll">
+		SELECT 
+				PKNO
+			  , PKNAME
+			  , PKTYPE
+			  , PKCLASS
+			  , PKHEIGHT
+			  , PKWEIGHT
+			  , PKDETAIL
+			  , TRNO
+		FROM POKEMON
+		ORDER BY PKNO
+	</entry>
+	
+	<entry key="searchByType">
+		SELECT 
+		DISTINCT PKTYPE
+		FROM POKEMON
+	</entry>
+	
+	<entry key="searchByClass">
+		SELECT 
+		DISTINCT PKCLASS 
+		FROM POKEMON
+	</entry>
+	
+	
+	<entry key="displayByType">
+		SELECT 
+				PKNO
+			  , PKNAME
+			  , PKTYPE
+			  , PKCLASS
+			  , PKHEIGHT
+			  , PKWEIGHT
+			  , PKDETAIL
+			  , TRNO
+		 FROM POKEMON 
+		 WHERE PKTYPE = ?
+	</entry>
+	
+	<entry key="displayByClass">
+		SELECT 
+				PKNO
+			  , PKNAME
+			  , PKTYPE
+			  , PKCLASS
+			  , PKHEIGHT
+			  , PKWEIGHT
+			  , PKDETAIL
+			  , TRNO
+		 FROM POKEMON 
+		 WHERE PKCLASS = ?
+	</entry>
+	
+	<entry key="inputPokemonName">
+		SELECT 
+				PKNO
+			  , PKNAME
+			  , PKTYPE
+			  , PKCLASS
+			  , PKHEIGHT
+			  , PKWEIGHT
+			  , PKDETAIL
+			  , TRNO
+		 FROM POKEMON 
+		 WHERE PKNAME LIKE ?
+	</entry>
+	
+	<entry key="updatePokemon">
+		UPDATE POKEMON 
+		SET    PKHEIGHT = ?
+	   	     , PKWEIGHT = ?
+			 , PKDETAIL = ? 
+		WHERE PKNAME = ?
+	</entry>
+	
+	<entry key="deletePokemon">
+		DELETE 
+		FROM POKEMON 
+		WHERE PKNAME = ?
+	</entry>
+</properties>
