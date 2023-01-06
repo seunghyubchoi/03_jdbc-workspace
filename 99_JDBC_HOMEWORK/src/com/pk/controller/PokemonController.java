@@ -215,4 +215,14 @@ public class PokemonController {
 			new PokemonMenu().displayFail("delete 요청이 실패했습니다.");
 		}
 	}
+	
+	public void displayRandomPokemon() {
+		ArrayList<Pokemon> list = new PokemonService().displayRandomPokemon();
+		if (list.isEmpty()) {
+			new PokemonMenu().displayFail("데이터 불러오기 실패");
+		} else {
+			new PokemonMenu().displaySearchAll(list);
+		}
+		
+	}
 }

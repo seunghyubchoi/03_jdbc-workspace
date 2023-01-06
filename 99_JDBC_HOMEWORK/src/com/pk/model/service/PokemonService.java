@@ -158,6 +158,7 @@ public class PokemonService {
 
 	/**
 	 * 포켓몬의 이름을 입력받는 메소드
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -170,6 +171,7 @@ public class PokemonService {
 
 	/**
 	 * 포켓몬 정보 업데이트 메소드
+	 * 
 	 * @param p
 	 * @return
 	 */
@@ -179,9 +181,10 @@ public class PokemonService {
 		close(conn);
 		return result;
 	}
-	
+
 	/**
 	 * 포켓몬 정보 삭제 메소드
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -190,5 +193,17 @@ public class PokemonService {
 		int result = new PokemonDao().deletePokemon(conn, name);
 		close(conn);
 		return result;
+	}
+
+	public ArrayList<Pokemon> displayRandomPokemon() {
+		Connection conn = getConnection();
+		ArrayList<Pokemon> list = new PokemonDao().displayRandomPokemon(conn);
+		if(list.isEmpty()) {
+			rollback(conn);
+		} else {
+			commit(conn);
+		}
+		close(conn);
+		return list;
 	}
 }

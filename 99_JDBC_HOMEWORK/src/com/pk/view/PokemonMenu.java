@@ -21,35 +21,66 @@ public class PokemonMenu {
 		case 1:
 			String userId = InsertUserId();
 			String userPwd = InsertUserPwd();
-			if(userId.equals("admin") && userPwd.equals("admin")) {
+			if (userId.equals("admin") && userPwd.equals("admin")) {
 				pc.adminLoginMenu(userId, userPwd);
 			} else {
-				pc.loginMenu(userId, userPwd);				
+				pc.loginMenu(userId, userPwd);
 			}
 			break;
 		case 2:
 
 			break;
 
-		default:System.out.println("메뉴 상의 숫자를 입력해주세요");
+		default:
+			System.out.println("메뉴 상의 숫자를 입력해주세요");
 			break;
 		}
 
 	}
-	
+
+	/**
+	 * 로그인 성공시 트레이너 메뉴 조회
+	 * 
+	 * @param userId
+	 */
 	public void trainerMenu(String userId) {
 		pc.displayTrainerName(userId);
-		System.out.println("1. 나의 포켓몬 조회");
-		int menu = sc.nextInt();
-		sc.nextLine();
-		switch (menu) {
-		case 1:
-			pc.displayMyPokemon(userId);
-			break;
+		while (true) {
+			System.out.println("1. 나의 포켓몬 조회");
+			System.out.println("2. 포켓몬 잡기");
+			int menu = sc.nextInt();
+			sc.nextLine();
 
-		default:
-			break;
+			switch (menu) {
+			case 1:
+				pc.displayMyPokemon(userId);
+				break;
+			case 2:
+				pc.displayRandomPokemon();
+
+				System.out.println("1. 포켓몬 다시 찾기");
+				System.out.println("2. 몬스터볼 사용");
+				menu = sc.nextInt();
+				sc.nextLine();
+
+				switch (menu) {
+				case 1:
+					pc.displayRandomPokemon();
+					break;
+
+				default:
+					break;
+				}
+				break;
+
+			default:
+				break;
+			}
+
 		}
+	}
+
+	public void signUp() {
 
 	}
 
@@ -86,8 +117,6 @@ public class PokemonMenu {
 				String pkDetail = sc.nextLine();
 				System.out.print("트레이너 번호 입력 : ");
 				String trNo = sc.nextLine();
-				
-				
 
 				pc.insertPokemon(pkName, pkType, pkClass, pkHeight, pkWeight, pkDetail, trNo);
 				break;
@@ -126,18 +155,17 @@ public class PokemonMenu {
 		}
 	}
 //------------------------------------------------------------------------------------
-	
+
 	public String InsertUserId() {
 		System.out.println("아이디를 입력해주세요.");
 		return sc.nextLine();
 	}
-	
+
 	public String InsertUserPwd() {
 		System.out.println("비밀번호를 입력해주세요.");
 		return sc.nextLine();
 	}
-	
-	
+
 	/**
 	 * 요청 성공시 사용자에게 보여지는 문구
 	 * 

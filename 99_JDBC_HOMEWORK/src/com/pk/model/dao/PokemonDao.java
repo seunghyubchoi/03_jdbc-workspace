@@ -17,9 +17,8 @@ import com.pk.model.vo.Trainer;
 
 public class PokemonDao {
 
-	
 	private Properties prop = new Properties();
-	
+
 	public PokemonDao() {
 		try {
 			prop.loadFromXML(new FileInputStream("resources/query.xml"));
@@ -27,6 +26,7 @@ public class PokemonDao {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * 트레이너 메뉴로 로그인하는 메소드
 	 * 
@@ -452,6 +452,7 @@ public class PokemonDao {
 
 	/**
 	 * 포켓몬 정보 삭제 메소드
+	 * 
 	 * @param conn
 	 * @param name
 	 * @return
@@ -461,7 +462,7 @@ public class PokemonDao {
 		PreparedStatement pstmt = null;
 		String sql = prop.getProperty("deletePokemon");
 		try {
-			
+
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, name);
 			result = pstmt.executeUpdate();
@@ -478,6 +479,34 @@ public class PokemonDao {
 			close(pstmt);
 		}
 		return result;
+
+	}
+
+	public ArrayList<Pokemon> displayRandomPokemon(Connection conn) {
+		ArrayList<Pokemon> list = new ArrayList<Pokemon>();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+
+		String sql = prop.getProperty("displayRandomPokemon");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rset = pstmt.executeQuery();
+
+			while (rset.next()) {
+				Pokemon p = new Pokemon(rset.getInt("PKNO"), rset.getString("PKNAME"), rset.getString("PKTYPE"),
+						rset.getString("PKCLASS"), rset.getDouble("PKHEIGHT"), rset.getDouble("PKWEIGHT"),
+						rset.getString("PKDETAIL"), rset.getInt("TRNO"));
+
+				list.add(p);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+
+		return list;
 
 	}
 }
